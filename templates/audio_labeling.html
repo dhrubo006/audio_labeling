@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Uploads</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='myscript.js') }}"></script>
+</head>
+
+<body>
+
+
+  <div class="audio-section">
+    {% for audio in audio_files %}
+    <a>
+      <form action="/label" methods="POST">
+
+        <label for="audiodata" id="currentLabel">Current Label: </label>
+        <audio controls id="audiodata" src="{{ url_for('play_audio', filename=audio) }}"></audio>
+
+        
+        <label for="newlabel">Select New Label:</label>
+        <select name="newlabel" id="newlabel">
+          <option value="label1">Label 1</option>
+          <option value="label2">Label 2</option>
+          <option value="label3">Label 3</option>
+          <!-- Add more options as needed -->
+        </select>
+
+        <input type="submit" value="submit">
+
+
+      </form>
+    </a>
+    {% endfor %}
+  </div>
+
+  </div>
+</body>
+
+</html>
