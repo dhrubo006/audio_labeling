@@ -1,0 +1,8 @@
+ID,Location,Emotion,User_Label
+clip1,uploads/chunk1.wav,depressed,
+clip2,uploads/chunk2.wav,elated,
+clip3,uploads/chunk3.wav,happy,
+clip4,uploads/chunk4.wav,sad,depressed
+clip5,uploads/chunk5.wav,sad,
+clip6,uploads/chunk6.wav,depressed,
+clip7,uploads/chunk7.wav,sad,

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Review Audio</title>
+</head>
+
+<body>
+
+    {% for clip in audio_clips %}
+    <div id="clip{{clip.ID}}">
+        <form action="/submit_labels" method="post">
+            <audio controls>
+                <!-- Updated src to point to the new route for serving audio files -->
+                <source src="/uploads/{{clip.Location.split('/')[-1]}}" type="audio/wav">
+                Your browser does not support the audio tag.
+            </audio>
+            <p>System Label: {{clip.Emotion}}</p>
+            <label for="label{{clip.ID}}">Your Label:</label>
+            <select name="label{{clip.ID}}">
+                <option value="happy">Happy</option>
+                <option value="sad">Sad</option>
+                <option value="elated">Elated</option>
+                <option value="depressed">Depressed</option>
+            </select>
+            <input type="submit" value="Submit">
+            <input type="hidden" name="clipID" value="{{clip.ID}}">
+        </form>
+        <br>
+    </div>
+    {% endfor %}
+
+    <script>
+        document.querySelectorAll("form").forEach(form => {
+            form.addEventListener("submit", function (event) {
+                let confirmation = confirm("Are you sure you want to submit your label for this audio?");
+                if (!confirmation) {
+                    event.preventDefault();
+                } else {
+                    // Hides the div containing the audio clip and its associated form
+                    form.parentNode.style.display = "none";
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
