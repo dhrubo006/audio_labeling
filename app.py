@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template, redirect, url_for,  send_from_directory
+from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 from src.audio_processing import process_audio
-import pandas as pd
+from src.audio_routes import review_audio, uploaded_file
+from src.label_routes import submit_labels
 import os
 
 app = Flask(__name__)
@@ -61,82 +62,19 @@ def index():
 
 
 @app.route("/review_audio", methods=["GET", "POST"])
-def review_audio():
-
-    """
-    Serves the 'review_audio' page where users can listen to the audio chunks and 
-    label their perceived emotion from the audio. Each audio chunk can be played 
-    directly from the page and is accompanied by a system-generated emotion label.
-    
-    The user is presented with a dropdown menu to submit their own label. Upon 
-    submission, a confirmation dialog appears. If confirmed, the user's label is 
-    saved to the CSV file and the audio entry is removed from the page.
-
-    Returns:
-        render_template: Renders the 'review_audio.html' template with audio clip data.
-    """
-
-    # Reading from the CSV file
-    df = pd.read_csv("audio_clips.csv")
-    audio_clips = df.to_dict(orient="records")
-
-    return render_template("review_audio.html", audio_clips=audio_clips)
-
+def review_audio_route():
+    return review_audio()
 
 @app.route('/uploads/<filename>', methods=['GET'])
-def uploaded_file(filename):
-    """
-    Serves uploaded audio files to the frontend when requested. This allows the 
-    frontend audio player to play the uploaded audio chunks. The function fetches 
-    the audio file based on the filename provided in the URL and sends it as a 
-    response.
+def uploaded_file_route(filename):
+    return uploaded_file(filename, UPLOAD_FOLDER)
 
-    Parameters:
-        filename (str): Name of the audio file to be served.
-
-    Returns:
-        send_from_directory: Serves the requested audio file from the UPLOAD_FOLDER.
-    """
-    return send_from_directory(UPLOAD_FOLDER, filename)
 
 
 
 @app.route('/submit_labels', methods=['POST'])
-def submit_labels():
-
-    """
-    Handles the submission of user labels for the audio chunks. When a user submits 
-    their emotion label for an audio chunk, this function is triggered to save 
-    the label to the 'audio_clips.csv' file.
-
-    It first loads the CSV into a DataFrame. Then, it checks for the 'User_Label' 
-    column and creates it if absent. Subsequently, it updates the user's label 
-    for the respective audio chunk in the DataFrame and saves the changes back 
-    to the CSV file.
-
-    Returns:
-        redirect: Redirects the user back to the 'review_audio' route.
-    """
-
-    df = pd.read_csv('audio_clips.csv')
-
-    # Check if 'User_Label' column exists, if not, create it.
-    if 'User_Label' not in df.columns:
-        df['User_Label'] = ''
-
-    clipID = request.form.get('clipID')
-    user_label = request.form.get(f'label{clipID}')
-
-    # Update the specific row's 'User_Label' column in the DataFrame
-    df.loc[df['ID'] == f'clip{clipID}', 'User_Label'] = user_label
-
-    # Save the updated DataFrame back to the CSV file
-    df.to_csv('audio_clips.csv', index=False)
-
-    return redirect(url_for('review_audio'))
-
-
-
+def submit_labels_route():
+    return submit_labels()
 
 
 if __name__ == "__main__":
