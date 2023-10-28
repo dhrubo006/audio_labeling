@@ -18,10 +18,10 @@
             <p>System Label: {{clip.Emotion}}</p>
             <label for="label{{clip.ID}}">Your Label:</label>
             <select name="label{{clip.ID}}">
-                <option value="happy">Happy</option>
-                <option value="sad">Sad</option>
-                <option value="elated">Elated</option>
-                <option value="depressed">Depressed</option>
+                <option value="Happy">Happy</option>
+                <option value="Sad">Sad</option>
+                <option value="Elated">Elated</option>
+                <option value="Depressed">Depressed</option>
             </select>
             <input type="submit" value="Submit">
             <input type="hidden" name="clipID" value="{{clip.ID}}">
@@ -34,11 +34,13 @@
         document.querySelectorAll("form").forEach(form => {
             form.addEventListener("submit", function (event) {
                 let confirmation = confirm("Are you sure you want to submit your label for this audio?");
+                console.log('data confirmed')
                 if (!confirmation) {
                     event.preventDefault();
                 } else {
                     // Hides the div containing the audio clip and its associated form
                     form.parentNode.style.display = "none";
+                    console.log('style display changed to None')
                 }
             });
         });

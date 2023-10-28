@@ -17,7 +17,11 @@ def review_audio():
 
     # Reading from the CSV file
     df = pd.read_csv("audio_clips.csv")
-    audio_clips = df.to_dict(orient="records")
+
+    # Filtering the DataFrame to only include rows where 'user_label' is NaN (not available)
+    df_filtered = df[pd.isna(df['User_Label'])]
+
+    audio_clips = df_filtered.to_dict(orient="records")
     return render_template("review_audio.html", audio_clips=audio_clips)
 
 def uploaded_file(filename, UPLOAD_FOLDER):
