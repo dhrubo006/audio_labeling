@@ -70,8 +70,6 @@ def uploaded_file_route(filename):
     return uploaded_file(filename, UPLOAD_FOLDER)
 
 
-
-
 @app.route('/submit_labels', methods=['POST'])
 def submit_labels_route():
     return submit_labels()
