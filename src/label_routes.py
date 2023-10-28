@@ -8,7 +8,7 @@ def submit_labels():
 
     When a user submits their emotion label for an audio chunk,
     this function is triggered to save the label to the 'audio_clips.csv' file.
-    Then it calls the check_labels_match to compare the user label and system label
+    Then it calls the compare_labels to compare the user label and system label
     """
     if request.method == "POST":
         clipID = request.form.get("clipID")
@@ -21,7 +21,7 @@ def submit_labels():
         df = set_user_label(df, clipID, user_label)
         df.to_csv("audio_clips.csv", index=False)
 
-        result = check_labels_match(clipID)
+        result = compare_labels(clipID)
         if result:
             print("User label matches the system emotion for this clip!")
         else:
@@ -40,7 +40,7 @@ def set_user_label(df, clipID, user_label):
 
 
 
-def check_labels_match(clipID):
+def compare_labels(clipID):
     """
     Compares the User_Label and Emotion for a specific clipID in the 'audio_clips.csv' file.
     
