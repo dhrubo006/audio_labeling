@@ -58,7 +58,7 @@ def save_chunks_to_csv(chunks_with_emotions):
     """
     # Creating the dataframe with an additional user_label column initialized with NaN values
     df = pd.DataFrame(chunks_with_emotions, columns=["ID", "Location", "Emotion"])
-    df["User_Label"] = np.nan
+    
     
     # If the CSV file exists, concatenate the new chunks to the existing ones
     if os.path.exists("audio_clips.csv"):
