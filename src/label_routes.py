@@ -38,6 +38,7 @@ def append_to_review(clip_data, user_label):
     """
     Append the provided clip data along with the User_Label to the 'review_clips.csv' file.
     """
+    clip_data = clip_data.copy()  # Ensure we're working on a copy, not a view
     clip_data["User_Label"] = user_label
 
     review_file = "review_clips.csv"
