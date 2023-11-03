@@ -4,10 +4,17 @@ import soundfile as sf
 import librosa
 import pandas as pd
 import numpy as np
+from speechbrain.pretrained.interfaces import foreign_class
 
 
 UPLOAD_FOLDER = "uploads"  # Assuming you have an 'uploads' folder to save the chunks
 
+# Global setup for the classifier
+classifier = foreign_class(
+    source="speechbrain/emotion-recognition-wav2vec2-IEMOCAP",
+    pymodule_file="custom_interface.py",
+    classname="CustomEncoderWav2vec2Classifier",
+)
 
 
 def process_audio(file_path):
@@ -44,11 +51,11 @@ def split_audio_into_chunks(file_path):
 
 def assign_emotion_to_chunks(chunks):
     """
-    Assigns a random emotion to each chunk.
+    Assigns an emotion to each chunk using SpeechBrain's classifier.
     """
     for chunk in chunks:
-        emotion = random.choice(["Happy", "Sad", "Elated", "Depressed"])
-        chunk.append(emotion)
+        _, _, _, emotion = classifier.classify_file(chunk[1])  # chunk[1] is the path of the chunk
+        chunk.append(emotion[0])  # append the detected emotion
     return chunks
 
 
@@ -58,12 +65,11 @@ def save_chunks_to_csv(chunks_with_emotions):
     """
     # Creating the dataframe with an additional user_label column initialized with NaN values
     df = pd.DataFrame(chunks_with_emotions, columns=["ID", "Location", "Emotion"])
-    
-    
+
     # If the CSV file exists, concatenate the new chunks to the existing ones
     if os.path.exists("audio_clips.csv"):
         df_existing = pd.read_csv("audio_clips.csv")
         df = pd.concat([df_existing, df], ignore_index=True)
-    
+
     # Saving the combined dataframe to CSV
     df.to_csv("audio_clips.csv", index=False)
